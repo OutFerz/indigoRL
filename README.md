@@ -1,4 +1,4 @@
-# 🧠🎮 PokeAI — Autonomous Pokémon Yellow Reinforcement Learning Agent
+# 🧠🎮 Project IndigoRL — Autonomous Pokémon Yellow Reinforcement Learning Agent
 
 <!-- ===================================================== -->
 <!-- BANNER IMAGE -->
@@ -53,7 +53,7 @@
 
 ## 🎯 Project Overview
 
-**PokeAI** is a Deep Reinforcement Learning research project focused on solving **long-horizon RPG environments** using **Pokémon Yellow** as a benchmark.
+**IndigoRL** is a Deep Reinforcement Learning research project focused on solving **long-horizon RPG environments** using **Pokémon Yellow** as a benchmark.
 
 The game presents:
 - Extremely sparse rewards
@@ -61,7 +61,7 @@ The game presents:
 - Long-term dependencies
 - Partial observability from pixels alone
 
-To overcome these challenges, PokeAI combines **visual perception** with **explicit symbolic state extraction from emulator RAM**, allowing the agent to both *see* and *understand* the game world.
+To overcome these challenges, IndigoRL combines **visual perception** with **explicit symbolic state extraction from emulator RAM**, allowing the agent to both *see* and *understand* the game world.
 
 ---
 
@@ -113,10 +113,10 @@ This neuro-symbolic approach significantly improves sample efficiency and traini
 ### Setup Steps
 
 ```bash
-git clone https://github.com/OutFerz/PokeAI.git
-cd PokeAI
-conda create -n pokeai python=3.11
-conda activate pokeai
+git clone https://github.com/OutFerz/indigoRL.git
+cd indigoRL
+conda create -n indigoRL python=3.11
+conda activate indigoRL
 pip install gymnasium pyboy shimmy stable-baselines3[extra] opencv-python torch-directml
 ```
 
@@ -172,7 +172,7 @@ R_t = R_exploration + R_events
 ## 📂 Project Structure
 
 ```
-PokeAI/
+indigoRL/
 ├── config/
 ├── experiments/
 ├── roms/
