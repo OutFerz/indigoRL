@@ -7,19 +7,19 @@
   <img src="https://img.shields.io/badge/Emulator-PyBoy-purple" />
 </p>
 
-> **Architecture:** PPO (Proximal Policy Optimization) + Neuro‑Symbolic State Decoding  
-> **Goal:** Train an Artificial Intelligence agent capable of completing **Pokémon Yellow** from scratch, with *zero prior knowledge*
+> **Architecture:** PPO (Proximal Policy Optimization) + Neuro-Symbolic State Decoding  
+> **Goal:** Train an Artificial Intelligence agent capable of completing **Pokémon Yellow** from scratch, with *zero prior knowledge* (Tabula Rasa).
 
 ---
 
 ## 🎯 Project Overview
 
-**PokeAI** is a Deep Reinforcement Learning research project focused on solving **long‑horizon RPG environments**. Pokémon Yellow represents a particularly challenging benchmark due to:
+**PokeAI** is a Deep Reinforcement Learning research project focused on solving **long-horizon RPG environments**. Pokémon Yellow represents a particularly challenging benchmark due to:
 
-* Extremely sparse rewards
-* Large state space
-* Long-term dependencies (decisions made minutes or hours earlier)
-* Partial observability from pixels alone
+- Extremely sparse rewards
+- Large state space
+- Long-term dependencies (decisions made minutes or hours earlier)
+- Partial observability from pixels alone
 
 To overcome these challenges, PokeAI combines **visual perception** with **explicit symbolic game state extraction**, allowing the agent to both *see* and *understand* the game world.
 
@@ -29,50 +29,50 @@ To overcome these challenges, PokeAI combines **visual perception** with **expli
 
 This project implements a **Deep Reinforcement Learning (Deep RL)** architecture designed for complex Game Boy–era RPGs.
 
-Unlike purely vision‑based agents that rely only on raw pixels, PokeAI uses a **Hybrid Observation Space** composed of:
+Unlike purely vision-based agents that rely only on raw pixels, PokeAI uses a **Hybrid Observation Space** composed of:
 
 1. **👁️ Vision (CNN-based)**  
    Screen processing to understand local geometry, obstacles, and transitions.
 
 2. **🧠 Memory (RAM Inspection)**  
    Direct reading of emulator memory to extract global context such as:
+   - Player coordinates
+   - Current map ID
+   - Progress flags (e.g., badges)
 
-   * Player coordinates
-   * Current map ID
-   * Progress flags (e.g., badges)
-
-This neuro‑symbolic approach dramatically improves sample efficiency and stability during training.
+This neuro-symbolic approach dramatically improves sample efficiency and stability during training.
 
 ---
 
 ## ✨ Key Features
 
-* **⚡ Accelerated Emulation**  
+- **⚡ Accelerated Emulation**  
   Uses **PyBoy** in headless mode during training, achieving speeds of **1000+ FPS**.
 
-* **👁️ Hybrid Observations**  
-  The agent not only sees pixels, but *knows* where it is through RAM‑injected state vectors.
+- **👁️ Hybrid Observations**  
+  The agent not only sees pixels, but *knows* where it is through RAM-injected state vectors.
 
-* **🗺️ Efficient Exploration**  
+- **🗺️ Efficient Exploration**  
   Dense reward shaping based on unique visited coordinates `(x, y)` to mitigate sparse reward issues.
 
-* **🎥 Streamer‑Ready Architecture**  
-  Asymmetric design allows full‑speed training in the background while a cloned instance runs at **60 FPS** for live visualization or streaming.
+- **🎥 Streamer-Ready Architecture**  
+  Asymmetric design allows full-speed training in the background while a cloned instance runs at **60 FPS** for live visualization or streaming.
 
-* **⚙️ Consumer‑Hardware Optimized**  
-  Thread control (`OMP_NUM_THREADS=1`) and custom `SleepCallback` allow training + streaming on mid‑range CPUs (e.g., i5 / Ryzen 5) without system freezes.
+- **⚙️ Hardware-Aware & Scalable**  
+  Default settings are chosen for broad compatibility with consumer hardware.  
+  The number of CPU cores and threads used during training can be adjusted via environment variables (e.g. `OMP_NUM_THREADS`) and configuration inside `train.py`, allowing the same codebase to scale from low-end machines to multi-core systems.
 
 ---
 
 ## 🛠️ Technology Stack
 
-| Component        | Technology        | Purpose                                      |
-| ---------------- | ----------------- | -------------------------------------------- |
-| **Language**     | Python 3.11       | Core logic                                   |
-| **RL Framework** | Stable‑Baselines3 | PPO implementation & vectorized environments |
-| **Emulator**     | PyBoy             | Low‑level Game Boy emulation                 |
-| **Vision**       | OpenCV, NumPy     | Frame preprocessing & rendering              |
-| **Logging**      | TensorBoard       | Real‑time metrics (reward, loss, entropy)    |
+| Component | Technology | Purpose |
+|---------|-----------|---------|
+| **Language** | Python 3.11 | Core logic |
+| **RL Framework** | Stable-Baselines3 | PPO implementation & vectorized environments |
+| **Emulator** | PyBoy | Low-level Game Boy emulation |
+| **Vision** | OpenCV, NumPy | Frame preprocessing & rendering |
+| **Logging** | TensorBoard | Real-time metrics (reward, loss, entropy) |
 
 ---
 
@@ -80,16 +80,16 @@ This neuro‑symbolic approach dramatically improves sample efficiency and stabi
 
 ### Prerequisites
 
-* **Python 3.11** (Conda recommended)
-* **Pokémon Yellow ROM**  
+- **Python 3.11** (Conda recommended)
+- **Pokémon Yellow ROM**  
   Must be named exactly `PokemonYellow.gb` and placed inside the `roms/` directory.
 
-### Step‑by‑Step Guide
+### Step-by-Step Guide
 
 #### 1️⃣ Clone the repository
 
 ```bash
-git clone https://github.com/your-username/PokeAI.git
+git clone https://github.com/OutFerz/PokeAI.git
 cd PokeAI
 ```
 
@@ -122,8 +122,8 @@ python src/utils/create_initial_state.py
 
 PokeAI is designed to run in **two terminals simultaneously**:
 
-* **🧠 Brain:** High‑speed training
-* **👀 Eyes:** Real‑time visualization
+- **🧠 Brain:** High-speed training
+- **👀 Eyes:** Real-time visualization
 
 ---
 
@@ -131,8 +131,9 @@ PokeAI is designed to run in **two terminals simultaneously**:
 
 Runs the PPO training loop in headless mode for maximum performance.
 
-* **CPU Usage:** Optimized for 1–2 cores
-* **Checkpoints:** Automatically saved to `experiments/`
+- **CPU / Multithreading Configurable:**  
+  Training parallelism is not fixed. You can scale CPU usage by modifying `train.py` and/or environment variables such as `OMP_NUM_THREADS`, enabling efficient execution on both low-end and high-core systems.
+- **Checkpoints:** Automatically saved to `experiments/`
 
 ```bash
 python train.py
@@ -146,8 +147,8 @@ python train.py
 
 Displays the agent playing at **60 FPS**.
 
-* Automatically detects improved models
-* Hot‑reloads new checkpoints without restarting
+- Automatically detects improved models
+- Hot-reloads new checkpoints without restarting
 
 ```bash
 python watch_continuous.py
@@ -175,7 +176,7 @@ tensorboard --logdir experiments/poke_ppo_v1/logs
 [DOWN, LEFT, RIGHT, UP, A, B]
 ```
 
-> `START` and `SELECT` are intentionally disabled to reduce stochastic noise and avoid menu‑locking behaviors.
+> `START` and `SELECT` are intentionally disabled to reduce stochastic noise and avoid menu-locking behaviors.
 
 ---
 
@@ -183,12 +184,10 @@ tensorboard --logdir experiments/poke_ppo_v1/logs
 
 The current reward function emphasizes **pure exploration**:
 
-[
-R_t = R_{exploration} + R_{events}
-]
+R_t = R_exploration + R_events
 
-* **Exploration Reward:** +1.0 for each unique `(x, y)` coordinate visited per map
-* **Inactivity Penalty (Implicit):** No reward for standing still forces movement through optimization pressure
+- **Exploration Reward:** +1.0 for each unique `(x, y)` coordinate visited per map
+- **Inactivity Penalty (Implicit):** No reward for standing still forces movement through optimization pressure
 
 ---
 
@@ -216,10 +215,10 @@ PokeAI/
 
 ## 🔮 Roadmap
 
-* [ ] Integrate **HippoTorch / S4** for long‑term memory
-* [ ] Add **Vision‑Language Model (VLM)** for on‑screen dialogue understanding
-* [ ] Badge‑aware curriculum learning
-* [ ] Multi‑objective reward decomposition
+- [ ] Integrate **HippoTorch / S4** for long-term memory
+- [ ] Add **Vision-Language Model (VLM)** for on-screen dialogue understanding
+- [ ] Badge-aware curriculum learning
+- [ ] Multi-objective reward decomposition
 
 ---
 
