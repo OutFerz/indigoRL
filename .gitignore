@@ -1,0 +1,24 @@
+# Ignorar archivos del sistema
+__pycache__/
+*.pyc
+.DS_Store
+
+# Ignorar entornos virtuales
+venv/
+env/
+.conda/
+
+# Ignorar la ROM (ILEGAL subirla)
+roms/*.gb
+roms/*.gbc
+roms/*.gba
+
+# Ignorar los modelos pesados (opcional, pero recomendado si pesan GBs)
+experiments/
+# Si quieres subir SOLO el mejor modelo, descomenta la siguiente línea y comenta la anterior:
+# experiments/**/*.zip
+# !experiments/**/final_model.zip
+
+# Ignorar carpetas de IDE
+.vscode/
+.idea/
