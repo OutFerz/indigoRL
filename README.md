@@ -1,116 +1,103 @@
-
 # IndigoRL - Pokémon Yellow Deep Reinforcement Learning 🧠🎮
 
-<!-- ===================================================== -->
-<!-- BANNER IMAGE -->
-<!-- Recommended size: 1200x400 -->
-<!-- Place at: assets/banner.png -->
-<!-- ===================================================== -->
-
 <p align="center">
-  <img src="assets/banner.png" width="100%" />
+  <img src="assets/banner.png" width="100%" alt="IndigoRL Banner" />
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Status-Active%20Development-success" />
-  <img src="https://img.shields.io/badge/Python-3.10%2B-blue" />
-  <img src="https://img.shields.io/badge/PyBoy-2.0-green" />
-  <img src="https://img.shields.io/badge/RL-Recurrent%20PPO-orange" />
-  <img src="https://img.shields.io/github/stars/OutFerz/indigoRL?style=flat" />
+  <img src="https://img.shields.io/badge/Status-Active%20Development-success?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/PyBoy-2.0-green?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/RL-Recurrent%20PPO-orange?style=for-the-badge" />
+  <img src="https://img.shields.io/github/stars/OutFerz/indigoRL?style=for-the-badge" />
 </p>
 
 <p align="center">
   <strong>Neuro-Symbolic Vision + RAM Reinforcement Learning Agent</strong><br>
-  Autonomous completion of Pokémon Yellow using long-term memory.
+  Autonomous completion of Pokémon Yellow using long-term memory (LSTM) and direct memory access.
 </p>
 
-<!-- ===================================================== -->
-<!-- DEMO GIF -->
-<!-- ===================================================== -->
-
 <p align="center">
-  <img src="assets/demo.gif" width="600" />
+  <img src="assets/demo.gif" width="600" alt="Agent Gameplay Demo" />
 </p>
 
 ---
 
 ## 📚 Table of Contents
 
-- [Project Overview](#project-overview)
-- [Key Features](#key-features)
-- [Technology Stack](#technology-stack)
-- [Installation & Setup](#installation--setup)
-- [Usage](#usage)
-- [Agent Architecture](#agent-architecture)
-- [Project Structure](#project-structure)
-- [Credits](#credits)
-- [Disclaimer](#disclaimer)
+- [Project Overview](#-project-overview)
+- [Key Features](#-key-features)
+- [Technology Stack](#-technology-stack)
+- [Installation & Setup](#-installation--setup)
+- [Usage](#-usage)
+- [Monitoring & Metrics](#-monitoring--metrics)
+- [Agent Architecture](#-agent-architecture)
+- [Project Structure](#-project-structure)
+- [Credits](#-credits)
+- [Disclaimer](#-disclaimer)
 
 ---
 
-## 🎯 Project Overview <a id="project-overview"></a>
+## 🎯 Project Overview
 
-**IndigoRL** is an autonomous Artificial Intelligence agent designed to complete
-*Pokémon Yellow* using **Deep Reinforcement Learning**.
+**IndigoRL** is an autonomous Artificial Intelligence agent designed to complete *Pokémon Yellow* using **Deep Reinforcement Learning**.
 
-Unlike generic agents that randomly press buttons, IndigoRL implements a
-**Neuro-Symbolic Architecture** combining:
+Unlike generic agents that randomly press buttons, IndigoRL implements a **Neuro-Symbolic Architecture** combining:
 
-- 🖼️ Computer Vision (CNN over game frames)
-- 🧠 Direct RAM memory inspection (symbolic state)
-- 🔁 Long-term memory via **LSTM (Recurrent PPO)**
+- 🖼️ **Computer Vision:** CNN processing over resized game frames.
+- 🧠 **Symbolic State:** Direct RAM memory inspection (event flags, battle state, map data).
+- 🔁 **Long-Term Memory:** Recurrent Neural Networks (LSTM via Recurrent PPO).
 
-This allows the agent to reason about **story progression, battles, and exploration**
-in an extremely sparse, long-horizon RPG environment.
+This allows the agent to reason about **story progression, battles, and exploration** in an extremely sparse, long-horizon RPG environment.
 
 ---
 
-## ✨ Key Features <a id="key-features"></a>
+## ✨ Key Features
 
 ### 🧠 LSTM Brain (Long-Term Memory)
-- Uses `RecurrentPPO` (PPO + LSTM) to retain past information.
+- Uses `RecurrentPPO` (PPO + LSTM).
 - Enables maze navigation, backtracking, and objective persistence.
+- Solves the "memoryless" limitation of standard RL agents.
 
 ### 🧩 Neuro-Symbolic Reward System
 - **Story Progress**
-  - Reads *event flags* directly from game RAM.
-  - Rewards medals, key items, and narrative milestones.
+  - Reads event flags directly from game RAM.
+  - Rewards badges, key items, and narrative milestones.
 - **Battle Awareness**
-  - Reads enemy HP and battle results from memory.
-  - Learns combat strategies instead of brute force.
+  - Reads enemy HP, player HP, and battle states.
+  - Learns combat strategies instead of brute-force button mashing.
 - **Exploration**
-  - Rewards new Map IDs.
+  - Rewards discovering new Map IDs.
   - Penalizes stagnation and looping behavior.
 
 ### ⚡ Extreme Efficiency
 - **State Loading**
-  - Automatically skips Oak’s intro using a clean save-state.
+  - Skips Oak’s intro using a clean save-state.
   - ~20% reduction in compute per episode.
+- **Headless Training**
+  - SDL disabled during training for maximum FPS.
 - **Parallel Training**
-  - Multiple emulator instances running simultaneously.
-
-### 🎮 Emulator Compatibility
-- Fully compatible with **PyBoy 2.0+**.
+  - Supports multiple emulator instances.
 
 ---
 
-## 🛠️ Technology Stack <a id="technology-stack"></a>
+## 🛠️ Technology Stack
 
 | Component | Technology |
 |---------|-----------|
 | Language | Python 3.10+ |
-| RL | Stable-Baselines3 Contrib (Recurrent PPO) |
+| RL Algorithm | Stable-Baselines3 Contrib (Recurrent PPO) |
 | Emulator | PyBoy 2.0+ |
-| Vision | OpenCV, NumPy |
+| Vision | OpenCV, NumPy, Scikit-Image |
 | Logging | TensorBoard |
 
 ---
 
-## 🚀 Installation & Setup <a id="installation--setup"></a>
+## 🚀 Installation & Setup
 
 ### Prerequisites
 - Python 3.10+ (Conda recommended)
-- Pokémon Yellow ROM (legally owned)
+- Pokémon Yellow ROM (`.gb`) — **legally owned**
 
 ### Setup
 
@@ -123,6 +110,7 @@ pip install -r requirements.txt
 ```
 
 ### ROM
+
 Place your ROM at:
 
 ```
@@ -131,7 +119,7 @@ roms/PokemonYellow.gb
 
 ---
 
-## 🕹️ Usage <a id="usage"></a>
+## 🕹️ Usage
 
 ### 1️⃣ Generate Initial Save State (Optional)
 
@@ -139,17 +127,17 @@ roms/PokemonYellow.gb
 python record_state.py
 ```
 
-Play the intro manually and close the window once you have control of Ash.
+Play the intro manually and close the window once you gain control of the player.
 
 ---
 
-### 2️⃣ Train the Agent (Recurrent PPO + LSTM)
+### 2️⃣ Train the Agent
 
 ```bash
 python train_lstm.py
 ```
 
-Models are saved in:
+Models and logs are saved to:
 
 ```
 experiments/poke_lstm_v1/
@@ -164,46 +152,66 @@ python play.py
 ```
 
 - Real-time 60 FPS playback
-- Live action and memory overlay
+- Neural network input overlay
+- Live RAM debugging info
 
 ---
 
-## 🧠 Agent Architecture <a id="agent-architecture"></a>
+## 📈 Monitoring & Metrics
+
+Monitor training in real time using TensorBoard:
+
+```bash
+tensorboard --logdir experiments/poke_lstm_v1/logs
+```
+
+Open your browser at:
+
+```
+http://localhost:6006
+```
+
+---
+
+## 🧠 Agent Architecture
 
 **Policy:** Multi-Input Recurrent Policy
 
-- **Visual Input**
-  - CNN over resized game frames
-- **RAM Input**
-  - Player X/Y
-  - HP, Level
-  - Map ID
+- **Visual Encoder (CNN)**
+  - Grayscale, downsampled game frames
+- **Symbolic Encoder (MLP)**
+  - RAM vector:
+    - X, Y, Map ID
+    - Player HP, Enemy HP
+    - Party Levels
+    - In-Battle Flag
 - **Memory Core**
   - LSTM (256 units)
-- **Output**
-  - Discrete GameBoy actions
+- **Action Head**
+  - Discrete GameBoy button actions
 
 ---
 
-## 📂 Project Structure <a id="project-structure"></a>
+## 📂 Project Structure
 
 ```
 indigoRL/
+├── assets/                 # README images
+├── experiments/            # Models and logs
+├── roms/                   # Game ROMs
 ├── src/
 │   └── environment/
-│       └── pokemon_env.py
-├── experiments/
-├── roms/
-├── states/
-├── train_lstm.py
-├── play.py
-├── record_state.py
-└── README.md
+│       └── pokemon_env.py  # Gym environment & RAM reader
+├── states/                 # Save states
+├── train_lstm.py           # Training entry point
+├── play.py                 # Visualization script
+├── record_state.py         # Save-state utility
+└── requirements.txt
 ```
 
 ---
 
-## 🤝 Credits <a id="credits"></a>
+## 🤝 Credits
 
 - PyBoy Emulator
 - Stable-Baselines3 Contrib
@@ -211,11 +219,8 @@ indigoRL/
 
 ---
 
-## 📜 Disclaimer <a id="disclaimer"></a>
+## 📜 Disclaimer
 
 This project is for **research and educational purposes only**.  
-You must legally own a copy of *Pokémon Yellow* to use the ROM.
-
----
-
-⭐ If you find this project interesting, consider giving it a star!
+You must legally own a physical or digital copy of *Pokémon Yellow* to use the ROM.  
+The authors do not encourage or support piracy.

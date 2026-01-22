@@ -10,65 +10,75 @@ ROM_PATH = "roms/PokemonYellow.gb"
 SESSION_NAME = "poke_lstm_v1"
 CHECKPOINT_DIR = f"experiments/{SESSION_NAME}/models"
 LOG_DIR = f"experiments/{SESSION_NAME}/logs"
-TOTAL_TIMESTEPS = 5000000 
+TOTAL_TIMESTEPS = 10000000 
 NUM_CPU = 6 
+FINAL_MODEL_PATH = f"{CHECKPOINT_DIR}/final_model_optimized"
 
-# Frecuencia de guardado: Cada 20 updates (aprox cada 5-10 minutos reales)
-# 12288 pasos por update * 20 = 245760 pasos
-SAVE_FREQ = 245760 // NUM_CPU 
+# Guardado cada 20 actualizaciones de la red
+SAVE_FREQ = (2048 * NUM_CPU * 20) // NUM_CPU 
 
 os.makedirs(CHECKPOINT_DIR, exist_ok=True)
 os.makedirs(LOG_DIR, exist_ok=True)
 
-print("--- INICIANDO ENTRENAMIENTO PRO CON MEMORIA (LSTM) ---")
-
 if __name__ == "__main__":
-    # 1. Crear entorno Vectorizado (6 CPUs)
+    # 1. Crear entorno Vectorizado
     env = make_vec_env(
         lambda: PokemonYellowEnv(ROM_PATH, render_mode='rgb_array'),
         n_envs=NUM_CPU,
         vec_env_cls=SubprocVecEnv
     )
 
-    # 2. Configurar el Guardado Automático (Para poder ver el Watch)
+    # 2. Callback para guardado periódico
     checkpoint_callback = CheckpointCallback(
         save_freq=SAVE_FREQ,
         save_path=CHECKPOINT_DIR,
-        name_prefix="lstm_model"
+        name_prefix="lstm_model_optimized"
     )
 
-    # 3. Crear modelo Recurrente (LSTM) + MultiInput
-    model = RecurrentPPO(
-        "MultiInputLstmPolicy", 
-        env, 
-        verbose=1, 
-        tensorboard_log=LOG_DIR,
-        learning_rate=0.0003,
-        n_steps=2048, 
-        batch_size=128,
-        n_epochs=10,
-        gamma=0.997,
-        gae_lambda=0.95,
-        clip_range=0.2,
-        ent_coef=0.01,
-        policy_kwargs=dict(
-            enable_critic_lstm=False, 
-            lstm_hidden_size=256,
+    # 3. Lógica de Carga o Creación del Modelo
+    # Verificamos si existe el modelo final previo para reanudar
+    if os.path.exists(f"{FINAL_MODEL_PATH}.zip"):
+        print(f"--- REANUDANDO ENTRENAMIENTO: Cargando {FINAL_MODEL_PATH} ---")
+        model = RecurrentPPO.load(
+            FINAL_MODEL_PATH, 
+            env=env, 
+            device="auto", # Detecta automáticamente tu 6600 XT
+            tensorboard_log=LOG_DIR
         )
-    )
+    else:
+        print(f"--- INICIANDO ENTRENAMIENTO DESDE CERO: {SESSION_NAME} ---")
+        model = RecurrentPPO(
+            "MultiInputLstmPolicy", 
+            env, 
+            verbose=1, 
+            tensorboard_log=LOG_DIR,
+            learning_rate=0.00025,
+            n_steps=2048,          
+            batch_size=1024,        
+            n_epochs=15,
+            gamma=0.998,           
+            gae_lambda=0.95,
+            clip_range=0.2,
+            ent_coef=0.02,         
+            policy_kwargs=dict(
+                enable_critic_lstm=False, 
+                lstm_hidden_size=256,
+            )
+        )
 
-    # 4. Entrenar con seguridad (Ctrl+C guarda el modelo)
-    print(f"Entrenando en {NUM_CPU} entornos paralelos a ~800 FPS...")
+    # 4. Ejecución del aprendizaje
     try:
         model.learn(
             total_timesteps=TOTAL_TIMESTEPS, 
-            tb_log_name="LSTM_Run",
+            tb_log_name="LSTM_Optimized_Heavy_Batch",
             callback=checkpoint_callback,
-            progress_bar=True
+            progress_bar=True,
+            reset_num_timesteps=False # Mantiene el conteo global de pasos en TensorBoard
         )
     except KeyboardInterrupt:
-        print("\n!!! Interrupción detectada. Guardando modelo de emergencia... !!!")
+        print("\n--- Pausa detectada. Guardando progreso... ---")
     finally:
-        model.save(f"{CHECKPOINT_DIR}/final_model_lstm")
+        # Guardado de seguridad siempre al cerrar
+        model.save(FINAL_MODEL_PATH)
         env.close()
-        print("¡Entrenamiento finalizado y guardado!")
+        print(f"✅ Proceso guardado en: {FINAL_MODEL_PATH}")
