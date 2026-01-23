@@ -12,6 +12,7 @@ class PokemonYellowEnv(Env):
         self.rom_path = rom_path
         self.render_mode = render_mode
         self.observation_type = observation_type
+        self.upload_interval = 300 # num of coords captured before sent to stream. needs adjusted based off training speed.
 
         # --- MEMORY ADDRESSES (Extracted from wram.asm) ---
         self.MEM_EVENT_FLAGS_START = 0xD747
@@ -61,6 +62,7 @@ class PokemonYellowEnv(Env):
         # Internal state variables
         self.visited_maps = set()
         self.visited_coords = set()
+        self.coords = ()
         self.last_event_count = 0
         self.last_hp = 1.0
         self.last_party_levels = 0
@@ -186,12 +188,13 @@ class PokemonYellowEnv(Env):
         # 6. SURVIVAL AND LOCAL EXPLORATION
         # Soft penalty for standing still (loops)
         coord = (self.pyboy.memory[self.MEM_X_COORD], self.pyboy.memory[self.MEM_Y_COORD], map_id)
+        self.coords = coord
         if coord not in self.visited_coords:
             self.visited_coords.add(coord)
             reward += 0.02
         else:
             reward -= 0.001
-
+            
         return reward
 
     # --- MEMORY READING FUNCTIONS ---

@@ -4,6 +4,8 @@ from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.callbacks import CheckpointCallback
 from src.environment.pokemon_env import PokemonYellowEnv
 import os
+from stream_agent_wrapper import StreamWrapper
+import uuid
 
 # --- CONFIGURATION ---
 ROM_PATH = "roms/PokemonYellow.gb"
@@ -23,7 +25,11 @@ os.makedirs(LOG_DIR, exist_ok=True)
 if __name__ == "__main__":
     # 1. Create Vectorized Environment
     env = make_vec_env(
-        lambda: PokemonYellowEnv(ROM_PATH, render_mode='rgb_array'),
+        lambda: StreamWrapper(PokemonYellowEnv(ROM_PATH, render_mode='rgb_array'), 
+                              stream_metadata={"user": "Pokemon_Yellow\n",
+                                              "env_id": uuid.uuid4().hex[:8],
+                                              "color": "#a200ff", # 
+                                              "extra": ""}),
         n_envs=NUM_CPU,
         vec_env_cls=SubprocVecEnv
     )
